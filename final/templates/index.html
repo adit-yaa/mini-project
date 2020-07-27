@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bully Analyzer</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body class="index-background ">
+    <div class="container" style="text-align: center;">
+        <br><br>
+        <h1 class="white-color" style="font-size:100px;font-weight: 900;">ToxiCheck</h1><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <!-- <h2>Please select a Platform</h2> -->
+        <div id="platform-select" class="row">
+            <div class="">
+                <a href="/list" role="button">
+                <div class="card" style="width:300px">
+                        <img class="card-img-top" src="{{url_for('static', filename='images/yt.png')}}" alt="Card image" style="width:100%">
+                        <div class="card-body">
+                            <h4 id="name" class="card-title"></h4>
+                        <p class="card-text">Click here to get a report of comments on your Youtube Videos.</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <!-- <div class="col-md-4 offset-md-4">
+                <a href="/list" role="button">
+                    <div class="card" style="width:400px">
+                        <img class="card-img-top" src="{{url_for('static', filename='images/twt.png')}}" alt="Card image" style="width:100%">
+                        <div class="card-body">
+                            <h4 id="name" class="card-title"></h4>
+                            <a href="#" class="btn btn-primary">See Profile</a>
+                        </div>
+                    </div>
+                </a>
+            </div> -->
+        </div>
+    </div>
+    <script>
+        var API1="http://localhost:8080/channel";
+        var credential_present={{ credential_present }};
+
+        function write_name(channel_name){
+            h2 = document.getElementById("name");
+            h2.appendChild(document.createTextNode("Hey "+channel_name+"!"));
+        }
+        if (credential_present){
+            var result = fetch(API1, {
+                method: 'get',
+            }).then(function(response) {
+                return response.json();
+            }).then(function(data) {
+                var playlistId = data.items[0].contentDetails.relatedPlaylists.uploads;
+                return fetch(API1 + '/' + playlistId);
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .catch(function(error) {
+                console.log('Request failed', error)
+            })
+  
+            result.then(function(r) {
+                var videoArr=r.items
+                write_name(videoArr[0].snippet.channelTitle);
+            });
+        }else{
+            write_name("There")
+        }
+    </script>
+</body>
+</html>
